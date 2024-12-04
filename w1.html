@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RBAC Login Page</title>
+  <style>
+    /* Set the moving gradient background */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #ff6ec7, #3b8d99, #4caf50, #f5a623);
+      background-size: 400% 400%;
+      animation: gradientBackground 15s ease infinite;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Keyframes for gradient animation */
+    @keyframes gradientBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .role-message {
+      font-size: 18px;
+      margin-top: 20px;
+      transition: color 0.3s ease;
+    }
+
+    /* Role-based styling */
+    .role-owner {
+      color: #D32F2F; /* Red for Owner */
+    }
+
+    .role-editor {
+      color: #1976D2; /* Blue for Editor */
+    }
+
+    /* Animation for form */
+    .login-container:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Background color change */
+    .bg-owner {
+      background-color: #ffe0e0;
+    }
+
+    .bg-editor {
+      background-color: #e3f2fd;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+    <p id="errorMessage" class="error">Invalid username or password!</p>
+    <p id="roleMessage" class="role-message"></p> <!-- Role message display -->
+  </div>
+
+  <script>
+    // Define hardcoded username, password, and roles
+    const users = {
+      "shiva23": { password: "hr.vr", role: "Owner" },
+      "editor123": { password: "hr.vr", role: "Editor" }
+    };
+
+    // Listen for form submission
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      
+      const errorMessage = document.getElementById("errorMessage");
+      const roleMessage = document.getElementById("roleMessage");
+
+      // Clear previous role message and error
+      errorMessage.style.display = "none";
+      roleMessage.textContent = "";
+
+      // Check if username exists
+      if (users[username] && users[username].password === password) {
+        const userRole = users[username].role;
+
+        // Display role-based message and styling
+        roleMessage.textContent = `Welcome ${username}! You are logged in as an ${userRole}.`;
+
+        if (userRole === "Owner") {
+          document.body.classList.add("bg-owner");
+          document.body.classList.remove("bg-editor");
+          roleMessage.classList.add("role-owner");
+          roleMessage.classList.remove("role-editor");
+          alert("Welcome Owner!");
+          window.location.href = "main.html"; // Redirect to Owner's page
+        } else if (userRole === "Editor") {
+          document.body.classList.add("bg-editor");
+          document.body.classList.remove("bg-owner");
+          roleMessage.classList.add("role-editor");
+          roleMessage.classList.remove("role-owner");
+          alert("Welcome Editor!");
+          window.location.href = "main.html"; // Redirect to Editor's page
+        }
+      } else {
+        errorMessage.style.display = "block";
+        document.body.classList.remove("bg-owner", "bg-editor");
+        roleMessage.classList.remove("role-owner", "role-editor");
+      }
+    });
+  </script>
+
+</body>
+</html>
+
